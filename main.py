@@ -24,6 +24,7 @@ def main():
             if not user:
                 exit()
             database["users"][user["username"]] = user
+            break
         elif ch == "3":
             exit()
         else:
