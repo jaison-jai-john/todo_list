@@ -4,6 +4,7 @@ import pickle
 
 def read_database():
     if os.path.exists("database.dat"):
+        print("loading database dont close!")
         with open("database.dat", "rb") as file:
             return pickle.load(file)
     else:
