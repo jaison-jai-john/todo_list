@@ -2,6 +2,10 @@ import auth
 import database as db
 import menu
 
+# notifications
+# sort
+# search
+# admin
 
 def main():
     # load database
@@ -16,6 +20,7 @@ def main():
             break
         elif ch == "2":
             user = auth.sign_up(database["users"])
+            database["users"][user["username"]] = user
             break
         elif ch == "3":
             exit()
@@ -23,7 +28,6 @@ def main():
             print("Invalid choice")
 
     menu.menu(user=user, database=database)
-    
     db.write_database(database)
 
 
