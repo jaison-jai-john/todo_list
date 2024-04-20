@@ -4,7 +4,6 @@ from todo_list import add_list, fetch_list, list_view
 def menu(user, database):
     if user["role"] == "user":
         user_menu(user, database)
-    ...
 
 
 # admin should be able to:
@@ -23,7 +22,7 @@ def user_menu(user, database):
     print(f'Welcome {user["username"]}!')
     lists = fetch_list(database, user)
     while True:
-        print("1. display lists \n2. add list \n3. select list")
+        print("1. display lists \n2. add list \n3. select list \n4.exit")
 
         ch = input("Enter choice: ")
         if ch == "1":
@@ -39,5 +38,7 @@ def user_menu(user, database):
                 print(i + 1, task_list["title"])
             ch = int(input("enter chocie: ")) - 1
             list_view(lists[ch], user)
-
-    ...
+        elif ch == "4":
+            break
+        else:
+            print("invalid input!")
