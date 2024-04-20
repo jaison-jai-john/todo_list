@@ -7,6 +7,7 @@ import menu
 # search
 # admin
 
+
 def main():
     # load database
     database = db.read_database()
@@ -20,8 +21,9 @@ def main():
             break
         elif ch == "2":
             user = auth.sign_up(database["users"])
+            if not user:
+                exit()
             database["users"][user["username"]] = user
-            break
         elif ch == "3":
             exit()
         else:
