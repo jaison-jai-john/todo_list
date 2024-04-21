@@ -1,7 +1,23 @@
-from task import add_task, display_tasks, edit_task, remove_task
+from helper import clear_terminal, print_sep
+from task import add_task, display_tasks, edit_task, remove_task, search_task
+
+
+def display_lists(lists: list):
+    clear_terminal()
+    if len(lists) == 0:
+        print("Empty!")
+        return False
+    print_sep("Lists")
+    print_sep("")
+    for i, task_list in enumerate(lists):
+        print(f'{i + 1}. {task_list["title"]}')
+    print_sep("")
+    return True
 
 
 def fetch_list(database, user):
+    if user["role"] == "admin":
+        return database["lists"]
     # create lists container
     lists = []
 
@@ -19,6 +35,7 @@ def fetch_list(database, user):
 
 
 def add_list(database, user):
+    clear_terminal()
     # take title input
     title = input("Enter title: ")
 
@@ -30,10 +47,8 @@ def add_list(database, user):
         "tasks": [],
     }
 
-    # add list to database
-    database["lists"].append(task_list)
-
     print("list created!")
+    clear_terminal()
     # return the list
     return task_list
 
@@ -45,34 +60,70 @@ def remove_list(database, list_to_remove):
         if task_list == list_to_remove:
             # remove the list from the database
             del database["lists"][pos]
+            clear_terminal()
             print("list removed")
 
 
 def edit_list(user, list_to_edit: dict):
-    options = ["edit title", "edit task", "remove task", "add task"]
-    if list_to_edit["owner"] == user["username"]:
+    # dynamically print the options based on the user
+    options = [
+        "edit title",
+        "edit task",
+        "remove task",
+        "add task",
+        "complete a task",
+        "search task",
+    ]
+    if list_to_edit["owner"] == user["username"] or user["role"] == "admin":
         options = options + ["add access", "remove access"]
+    options.append("exit")
 
+    # print the options
     print("what would you like to do?: ")
     for i, option in enumerate(options):
         print(f"{i+1}. {option}")
 
+    # get user choice
     ch = input("Enter choice: ")
+    clear_terminal()
+    # edit title
     if ch == "1":
         list_to_edit["title"] = input("Enter title: ")
+    # edit task
     elif ch == "2":
-        display_tasks(list_to_edit["tasks"])
-        ch = int(input("Enter choice: ")) - 1
-
-        edit_task(list_to_edit["tasks"][ch])
+        # display tasks
+        if display_tasks(list_to_edit["tasks"]):
+            ch = int(input("Enter choice: ")) - 1
+            # edit task
+            edit_task(list_to_edit["tasks"][ch])
+    # remove task
     elif ch == "3":
         remove_task(list_to_edit["tasks"])
+    # add task
     elif ch == "4":
         add_task(list_to_edit["tasks"])
-    elif user["username"] == list_to_edit["owner"] and ch == "5":
+    elif ch == "5":
+        if display_tasks(list_to_edit["tasks"]):
+            ch = int(input("Enter choice: ")) - 1
+            list_to_edit["tasks"][ch]["completed"] = True
+    # search task
+    elif ch == "6":
+        search_task(list_to_edit["tasks"])
+    # add access
+    elif (ch == "7" and user["role"] == "user") or (
+        ch == "9"
+        and (user["role"] == "admin" or user["username"] == list_to_edit["owner"])
+    ):
+        clear_terminal()
+    elif (
+        user["username"] == list_to_edit["owner"] or user["role"] == "admin"
+    ) and ch == "7":
         username = input("enter the username of the user you want to give access to: ")
         list_to_edit["access"].append(username)
-    elif user["username"] == list_to_edit["owner"] and ch == "6":
+    # remove access
+    elif (
+        user["username"] == list_to_edit["owner" or user["role"] == "admin"]
+    ) and ch == "8":
         for i, username in enumerate(list_to_edit["access"]):
             print(i + 1, username)
         ch = int(input("please enter choice: "))
@@ -83,13 +134,27 @@ def edit_list(user, list_to_edit: dict):
 
 def list_view(list_to_view: dict, user):
     while True:
-        print("1. view tasks \n2. edit list \n3.exit")
-        ch = input()
+        print_sep(list_to_view["title"])
+        print_sep()
+        # print options
+        print("1. view tasks \n2. complete a task \n3. edit list \n4. exit")
+        # get user choice
+        ch = input("Enter choice: ")
+        clear_terminal()
+        # view tasks
         if ch == "1":
             display_tasks(list_to_view["tasks"])
         elif ch == "2":
-            edit_list(user, list_to_view)
+            if display_tasks(list_to_view["tasks"]):
+                ch = int(input("Enter choice: ")) - 1
+                clear_terminal()
+                list_to_view["tasks"][ch]["completed"] = True
+        # edit list
         elif ch == "3":
+            edit_list(user, list_to_view)
+        # exit
+        elif ch == "4":
+            clear_terminal()
             break
         else:
-            print("invalid input")
+            print("invalid input this one?")

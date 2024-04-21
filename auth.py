@@ -1,28 +1,36 @@
 from string import punctuation
 
+from helper import clear_terminal
 
-def login(users: dict):
+
+def login(database: dict, users: dict):
     # get user credentials
     user_name = input("Enter your username: ")
-    password = input("Enter your password: ")
 
     # check if user exists
     user = users.get(user_name)
 
     # user does not exist
     if not user:
+        print("User does not exist")
         ch = input("do you want to retry? (y/n): ").lower()
         if ch == "y":
+            clear_terminal()
             return login(users)
         else:
+            clear_terminal()
             return
 
     # user exists
     while True:
+        # get password
+        password = input("Enter your password: ")
         # check if password is correct
         if user["password"] == password:
+            clear_terminal()
             # login
             print("Login successful")
+            remember_me(database, user_name)
             return user
         # password is incorrect
         else:
@@ -32,7 +40,18 @@ def login(users: dict):
                 break
 
 
-def sign_up(users: dict):
+def remember_me(database: dict, username: str):
+    while True:
+        ch = input("Do you want to remember your username? (y/n): ").lower()
+        if ch == "n":
+            break
+        elif ch == "y":
+            database["user"] = username
+            break
+    clear_terminal()
+
+
+def sign_up(database: dict, users: dict):
     while True:
         username = input("Enter your username: ")
         # username length less than 15
@@ -50,6 +69,7 @@ def sign_up(users: dict):
         # username is valid
         else:
             break
+    clear_terminal()
 
     while True:
         password = input("Enter your password: ")
@@ -62,6 +82,32 @@ def sign_up(users: dict):
 
         # password is valid
         break
+    clear_terminal()
 
     # return user
+    remember_me(database, username)
     return {"username": username, "password": password, "role": "user"}
+
+
+def add_user(database: dict):
+    user = sign_up(database["users"])
+    if user:
+        database["users"][user["username"]] = user
+    else:
+        print("invalid input!")
+
+
+def remove_user(database: dict):
+    username = input("Enter username: ")
+    if username in database["users"]:
+        del database["users"][username]
+
+
+def edit_user(database: dict):
+    username = input("Enter username: ")
+    if username in database["users"]:
+        user = database["users"][username]
+        user["password"] = input("Enter new password: ")
+        user["role"] = input("Enter new role: ")
+    else:
+        print("invalid input!")
