@@ -1,20 +1,39 @@
+import datetime
+
 from helper import clear_terminal, print_sep
 
 
-def display_tasks(tasks: list):
+def display_tasks(tasks: list, sort=True):
     clear_terminal()
     if len(tasks) == 0:
         print("Empty!")
-        return False
+        return False, tasks
     print_sep("Tasks")
     print_sep()
     # iterate through tasks
+    if sort:
+        tasks.sort(
+            key=lambda x: (
+                x["completed"] == False
+                and datetime.datetime.today()
+                < datetime.datetime.strptime(x["due"], "%Y-%m-%d"),
+                not x["completed"],
+                x["due"],
+            ),
+        )
     for i, task in enumerate(tasks):
         # print each task
-        print(
-            f'{i + 1}. {task["task"]} | {task["due"]} | {"Completed" if task["completed"] else "Not Completed"}'
-        )
-    return True
+        if task["completed"]:
+            completion_status = "completed"
+        elif (
+            datetime.datetime.strptime(task["due"], "%Y-%m-%d")
+            < datetime.datetime.today()
+        ):
+            completion_status = "overdue"
+        else:
+            completion_status = "not completed"
+        print(f'{i + 1}. {task["task"]} | {task["due"]} | {completion_status}')
+    return True, tasks
 
 
 def edit_task(task: dict):
@@ -39,20 +58,21 @@ def edit_task(task: dict):
 
 def remove_task(task_list: list):
     # display tasks
-    print("what task do you want to remove?: ")
-    display_tasks(task_list)
+    not_empty, task_list = display_tasks(task_list)
+    if not_empty:
+        print("what task do you want to remove?: ")
 
-    # take input
-    ch = int(input("Enter choice: ")) - 1
+        # take input
+        ch = int(input("Enter choice: ")) - 1
 
-    # check if input is valid
-    if ch < 0 or ch >= len(task_list):
-        print("invalid input!")
-        return
+        # check if input is valid
+        if ch < 0 or ch >= len(task_list):
+            print("invalid input!")
+            return
 
-    # remove task
-    del task_list[ch]
-    print("task deleted!")
+        # remove task
+        del task_list[ch]
+        print("task deleted!")
 
 
 def add_task(task_list: list):
