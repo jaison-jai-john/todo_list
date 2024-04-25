@@ -1,6 +1,7 @@
 import auth
 import database as db
 from helper import assert_type, clear_terminal, print_sep
+from notifications import show_reminders
 from todo_list import add_list, display_lists, fetch_list, list_view, remove_list
 
 
@@ -109,6 +110,12 @@ def user_menu(user, database):
 
     # fetch lists which the user owns or has access to
     lists = fetch_list(database, user)
+
+    tasks = []
+    for task_list in lists:
+        tasks.extend(task_list["tasks"])
+    show_reminders(tasks)
+
     while True:
         # print options
         print(
@@ -124,7 +131,8 @@ def user_menu(user, database):
             display_lists(lists)
         # add list
         elif ch == "2":
-            lists.append(add_list(database, user))
+            database["lists"].append(add_list(database, user))
+            lists = fetch_list(database=database, user=user)
         # edit list view
         elif ch == "3":
             if display_lists(lists):
