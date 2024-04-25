@@ -30,12 +30,13 @@ def captcha_auth():
     text = input("Enter the text in the image or regenerate/ exit: ").upper()
     # check if the user entered the correct text
     if text == code:
-        return True
+        human = True
     elif text == "REGENERATE":
-        return captcha_auth()
+        human = captcha_auth()
     elif text == "EXIT":
         exit()
     else:
-        return False
+        human = False
     captcha.close()
     os.remove("captcha.png")
+    return human
