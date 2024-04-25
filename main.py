@@ -5,8 +5,6 @@ from captcha import captcha_auth
 from helper import clear_terminal
 
 # notifications
-# sort
-# done
 # error handling
 
 
