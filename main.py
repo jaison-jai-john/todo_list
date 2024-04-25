@@ -1,6 +1,7 @@
 import auth
 import database as db
 import menu
+from captcha import captcha_auth
 from helper import clear_terminal
 
 # notifications
@@ -14,6 +15,7 @@ def main():
     database = db.read_database()
     clear_terminal()
     # login/signup
+    # check if the user is remembered
     if not database.get("user"):
         while True:
             # print out options
@@ -21,28 +23,27 @@ def main():
             # get user choice
             ch = input("Enter your choice: ")
             clear_terminal()
-            # login
-            if ch == "1":
-                # get user for the session
-                user = auth.login(database, database["users"])
-                if not user:
-                    exit("shutting down!")
-                break
-            # signup
-            elif ch == "2":
-                # get user for the session
-                user = auth.sign_up(database, database["users"])
-                # incase user is not returned due to invalid input exit program
-                if not user:
-                    exit("shutting down!")
-                # add user to database
-                database["users"][user["username"]] = user
-                break
+            if ch == "1" or "2":
+                if captcha_auth():
+                    # login
+                    if ch == "1":
+                        # get user for the session
+                        user = auth.login(database, database["users"])
+                        if not user:
+                            exit("shutting down!")
+                        break
+                    # signup
+                    elif ch == "2":
+                        # get user for the session
+                        user = auth.add_user(database)
+                        if not user:
+                            exit("shutting down!")
             # exit
             elif ch == "3":
                 exit("shutting down")
             else:
                 print("Invalid choice")
+    # user is rememebered so return user
     else:
         user = database["users"][database["user"]]
 
