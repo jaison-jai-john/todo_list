@@ -1,4 +1,4 @@
-from helper import clear_terminal, print_sep
+from helper import assert_type, clear_terminal, print_sep
 from task import add_task, display_tasks, edit_task, remove_task, search_task
 
 
@@ -96,9 +96,20 @@ def edit_list(user, list_to_edit: dict):
         # display tasks
         not_empty, list_to_edit["tasks"] = display_tasks(list_to_edit["tasks"])
         if not_empty:
-            ch = int(input("Enter choice: ")) - 1
-            # edit task
-            edit_task(list_to_edit["tasks"][ch])
+            ch = assert_type(
+                input("Enter Choice: "),
+                int,
+                "Enter Choice: ",
+                "Please enter an integer!",
+                True,
+                key=lambda x: (
+                    True if x <= len(list_to_edit["tasks"]) and x > 0 else False
+                ),
+            )
+            if ch:
+                ch -= 1
+                # edit task
+                edit_task(list_to_edit["tasks"][ch])
     # remove task
     elif ch == "3":
         remove_task(list_to_edit["tasks"])
@@ -109,8 +120,19 @@ def edit_list(user, list_to_edit: dict):
     elif ch == "5":
         not_empty, list_to_edit["tasks"] = display_tasks(list_to_edit["tasks"])
         if not_empty:
-            ch = int(input("Enter choice: ")) - 1
-            list_to_edit["tasks"][ch]["completed"] = True
+            ch = assert_type(
+                input("Enter Choice: "),
+                int,
+                "Enter Choice: ",
+                "Please enter an integer!",
+                True,
+                key=lambda x: (
+                    True if x <= len(list_to_edit["tasks"]) and x > 0 else False
+                ),
+            )
+            if ch:
+                ch -= 1
+                list_to_edit["tasks"][ch]["completed"] = True
     # search task
     elif ch == "6":
         search_task(list_to_edit["tasks"])
@@ -131,9 +153,20 @@ def edit_list(user, list_to_edit: dict):
         user["username"] == list_to_edit["owner" or user["role"] == "admin"]
     ) and ch == "8":
         for i, username in enumerate(list_to_edit["access"]):
-            print(i + 1, username)
-        ch = int(input("please enter choice: "))
-        del list_to_edit["access"][ch - 1]
+            print(f"{i + 1}. {username}")
+        ch = assert_type(
+            input("Enter Choice: "),
+            int,
+            "Enter Choice: ",
+            "Please enter an integer!",
+            True,
+            key=lambda x: (
+                True if x <= len(list_to_edit["access"]) and x > 0 else False
+            ),
+        )
+        if ch:
+            ch -= 1
+            del list_to_edit["access"][ch - 1]
     else:
         print("invalid input!")
 
@@ -153,9 +186,20 @@ def list_view(list_to_view: dict, user):
         elif ch == "2":
             not_empty, list_to_view["tasks"] = display_tasks(list_to_view["tasks"])
             if not_empty:
-                ch = int(input("Enter choice: ")) - 1
-                clear_terminal()
-                list_to_view["tasks"][ch]["completed"] = True
+                ch = assert_type(
+                    input("Enter Choice: "),
+                    int,
+                    "Enter Choice: ",
+                    "Please enter an integer!",
+                    True,
+                    key=lambda x: (
+                        True if x <= len(list_to_view["tasks"]) and x > 0 else False
+                    ),
+                )
+                if ch:
+                    ch -= 1
+                    clear_terminal()
+                    list_to_view["tasks"][ch]["completed"] = True
         # edit list
         elif ch == "3":
             edit_list(user, list_to_view)
