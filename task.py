@@ -99,7 +99,13 @@ def remove_task(task_list: list):
 def add_task(task_list: list):
     # take input
     task = input("enter task: ")
-    due = input("enter due date in YYYY-MM-DD format: ")
+    while True:
+        due = input("enter due date in YYYY-MM-DD format: ")
+        try:
+            datetime.date.fromisoformat(due)
+            break
+        except:
+            print("invalid format")
     completed = False
     # add task to list
     task_list.append({"task": task, "due": due, "completed": completed})
