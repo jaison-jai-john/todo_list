@@ -1,6 +1,6 @@
 import datetime
 
-from helper import clear_terminal, print_sep
+from helper import assert_type, clear_terminal, print_sep
 
 
 def display_tasks(tasks: list, sort=True):
@@ -49,16 +49,24 @@ def edit_task(task: dict):
         print(f"{i + 1}.", field)
 
     # take input
-    ch = int(input("Enter choice: ")) - 1
-
-    # edit todo
-    if ch == 0:
-        task["task"] = input("Enter task: ")
-    # edit due date
-    elif ch == 1:
-        task["due"] = input("Enter due date in YYYY-MM-DD format: ")
-    else:
-        print("invalid input!")
+    ch = assert_type(
+        input("Enter Choice: "),
+        int,
+        "Enter Choice: ",
+        "Please enter an integer!",
+        True,
+        key=lambda x: True if x <= len(fields) and x > 0 else False,
+    )
+    if ch:
+        ch -= 1
+        # edit todo
+        if ch == 0:
+            task["task"] = input("Enter task: ")
+        # edit due date
+        elif ch == 1:
+            task["due"] = input("Enter due date in YYYY-MM-DD format: ")
+        else:
+            print("invalid input!")
 
 
 def remove_task(task_list: list):
@@ -68,16 +76,24 @@ def remove_task(task_list: list):
         print("what task do you want to remove?: ")
 
         # take input
-        ch = int(input("Enter choice: ")) - 1
+        ch = assert_type(
+            input("Enter Choice: "),
+            int,
+            "Enter Choice: ",
+            "Please enter an integer!",
+            True,
+            key=lambda x: True if x <= len(task_list) and x > 0 else False,
+        )
+        if ch:
+            ch -= 1
+            # check if input is valid
+            if ch < 0 or ch >= len(task_list):
+                print("invalid input!")
+                return
 
-        # check if input is valid
-        if ch < 0 or ch >= len(task_list):
-            print("invalid input!")
-            return
-
-        # remove task
-        del task_list[ch]
-        print("task deleted!")
+            # remove task
+            del task_list[ch]
+            print("task deleted!")
 
 
 def add_task(task_list: list):
