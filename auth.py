@@ -1,6 +1,6 @@
 from string import punctuation
 
-from helper import clear_terminal
+from helper import assert_type, clear_terminal, print_sep
 
 
 def login(database: dict, users: dict):
@@ -57,47 +57,53 @@ def remember_me(database: dict, username: str):
     clear_terminal()
 
 
-def sign_up(database: dict, users: dict):
+def sign_up(database: dict, users: dict, remember=True):
     while True:
-        username = input("Enter your username: ")
-        # username length less than 15
-        if len(username) > 15:
-            print("Username should be less than 15 characters")
-        # username length greater than 3
-        elif len(username) < 3:
-            print("Username should be greater than 3 characters")
-        # username should not contain special characters
-        elif any(char in username for char in punctuation):
-            print("Username should not contain special characters")
-        # username already exists
-        elif users.get(username):
-            print("Username already exists")
-        # username is valid
-        else:
+        username = assert_type(
+            input("Enter username: "),
+            str,
+            "Enter username: ",
+            "username's size should be from 3 to 15. should not contain special characters and should be unique!",
+            True,
+            key=lambda x: (
+                True
+                if len(x) >= 3
+                and len(x) <= 15
+                and not any(char in punctuation for char in x)
+                and not users.get(x)
+                else False
+            ),
+        )
+        if username:
             break
+        else:
+            return False
     clear_terminal()
 
     while True:
-        password = input("Enter your password: ")
-        # password length less than 15
-        if len(password) > 15:
-            print("Password should be less than 15 characters")
-        # password length greater than 3
-        if len(password) < 3:
-            print("Password should be greater than 3 characters")
-
-        # password is valid
-        break
+        password = assert_type(
+            input("Enter new password: "),
+            str,
+            "Enter new password: ",
+            "password size should be between 3 and 15",
+            True,
+            lambda x: True if len(x) >= 3 and len(x) <= 15 else False,
+        )
+        if password:
+            break
+        else:
+            return False
     clear_terminal()
 
     # return user
-    remember_me(database, username)
+    if remember:
+        remember_me(database, username)
     return {"username": username, "password": password, "role": "user"}
 
 
-def add_user(database: dict):
+def add_user(database: dict, remember=True):
     # create a user
-    user = sign_up(database, database["users"])
+    user = sign_up(database, database["users"], remember)
     # if user created is valid then add to database
     if user:
         database["users"][user["username"]] = user
@@ -105,26 +111,87 @@ def add_user(database: dict):
     # else print invalid input
     else:
         print("invalid input!")
-        return False
+        return user
 
 
 def remove_user(database: dict):
+    print_sep("Users")
+    print_sep()
+    for i, user in enumerate(database["users"]):
+        print(f"{i+1}. {user}")
+    print_sep()
     # take username as input
     username = input("Enter username: ")
     # if user exists then delete user
     if username in database["users"]:
         del database["users"][username]
+    clear_terminal()
 
 
 def edit_user(database: dict):
+    print_sep("Users")
+    print_sep()
+    for i, user in enumerate(database["users"]):
+        print(f"{i+1}. {user}")
+    print_sep()
     # take username as input
     username = input("Enter username: ")
     # check if user exists
     if username in database["users"]:
         # edit user
         user = database["users"][username]
-        user["password"] = input("Enter new password: ")
-        user["role"] = input("Enter new role: ")
+
+        change = input("Do you want to change the username? (y/n): ").lower()
+        if change == "y":
+            new_username = assert_type(
+                input("Enter username: "),
+                str,
+                "Enter username: ",
+                "username's size should be from 3 to 15. should not contain special characters and should be unique!",
+                True,
+                key=lambda x: (
+                    True
+                    if len(x) >= 3
+                    and len(x) <= 15
+                    and not any(char in punctuation for char in x)
+                    and not database["users"].get(x)
+                    else False
+                ),
+            )
+            if new_username:
+                database["users"][new_username] = user
+                del database["users"][username]
+
+                username = new_username
+                user = database["users"][username]
+
+        change = input("Do you want to change the password? (y/n): ").lower()
+        if change == "y":
+            password = assert_type(
+                input("Enter new password: "),
+                str,
+                "Enter new password: ",
+                "password size should be between 3 and 15",
+                True,
+                lambda x: True if len(x) >= 3 and len(x) <= 15 else False,
+            )
+            if password:
+                user["password"] = password
+
+        change = input("Do you want to change the role? (y/n): ").lower()
+        if change == "y":
+            role = assert_type(
+                input("Enter new role: "),
+                message="Enter new role: ",
+                error_message="role has to be user or admin",
+                take_value=True,
+                key=lambda x: True if x in ["admin", "user"] else False,
+            )
+
+            if role:
+                user["role"] = role
+        clear_terminal()
     # user does not exist
     else:
+        clear_terminal()
         print("invalid input!")
