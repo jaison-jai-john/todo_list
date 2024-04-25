@@ -109,16 +109,22 @@ def add_user(database: dict):
 
 
 def remove_user(database: dict):
+    # take username as input
     username = input("Enter username: ")
+    # if user exists then delete user
     if username in database["users"]:
         del database["users"][username]
 
 
 def edit_user(database: dict):
+    # take username as input
     username = input("Enter username: ")
+    # check if user exists
     if username in database["users"]:
+        # edit user
         user = database["users"][username]
         user["password"] = input("Enter new password: ")
         user["role"] = input("Enter new role: ")
+    # user does not exist
     else:
         print("invalid input!")

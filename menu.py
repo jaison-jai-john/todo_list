@@ -47,6 +47,7 @@ def admin(user, database):
             if display_lists(lists):
                 ch = int(input("Enter choice: ")) - 1
                 list_view(lists[ch], user)
+        # remove list
         elif ch == "4":
             if display_lists(lists):
                 ch = int(input("Enter choice: ")) - 1
@@ -57,16 +58,21 @@ def admin(user, database):
         # remove user
         elif ch == "6":
             auth.remove_user(database)
+        # edit user
         elif ch == "7":
             auth.edit_user(database)
+        # view users
         elif ch == "8":
             for i, user in enumerate(database["users"]):
                 print(f"{i+1}. {user}")
+        # exit
         elif ch == "9":
             break
+        # logout and exit
         elif ch == "10":
             database["user"] = None
             break
+        # invalid input
         else:
             print("invalid input!")
 
@@ -103,15 +109,19 @@ def user_menu(user, database):
                 ch = int(input("enter chocie: ")) - 1
                 clear_terminal()
                 list_view(lists[ch], user)
-        # exit
+        # remove list
         elif ch == "4":
             if display_lists(lists):
                 ch = int(input("enter choice: ")) - 1
                 remove_list(database, lists[ch])
+
+        # exit
         elif ch == "5":
             break
+        # logout and exit
         elif ch == "6":
             database["user"] = None
             break
+        # invalid input
         else:
             print("invalid input!")

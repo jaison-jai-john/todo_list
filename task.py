@@ -5,12 +5,13 @@ from helper import clear_terminal, print_sep
 
 def display_tasks(tasks: list, sort=True):
     clear_terminal()
+    # if no tasks exist
     if len(tasks) == 0:
         print("Empty!")
         return False, tasks
     print_sep("Tasks")
     print_sep()
-    # iterate through tasks
+    # if sort is true then sort tasks usin priority completed -> overdue -> not completed
     if sort:
         tasks.sort(
             key=lambda x: (
@@ -21,8 +22,9 @@ def display_tasks(tasks: list, sort=True):
                 x["due"],
             ),
         )
+    # iterate through tasks
     for i, task in enumerate(tasks):
-        # print each task
+        # set completion text
         if task["completed"]:
             completion_status = "completed"
         elif (
@@ -32,7 +34,10 @@ def display_tasks(tasks: list, sort=True):
             completion_status = "overdue"
         else:
             completion_status = "not completed"
+        # print each task
         print(f'{i + 1}. {task["task"]} | {task["due"]} | {completion_status}')
+
+    # return true for not empty and tasks incase tasks have been sorted
     return True, tasks
 
 

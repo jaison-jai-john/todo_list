@@ -4,11 +4,13 @@ from task import add_task, display_tasks, edit_task, remove_task, search_task
 
 def display_lists(lists: list):
     clear_terminal()
+    # if no lists exist
     if len(lists) == 0:
         print("Empty!")
         return False
     print_sep("Lists")
     print_sep("")
+    # print lists
     for i, task_list in enumerate(lists):
         print(f'{i + 1}. {task_list["title"]}')
     print_sep("")
@@ -103,6 +105,7 @@ def edit_list(user, list_to_edit: dict):
     # add task
     elif ch == "4":
         add_task(list_to_edit["tasks"])
+    # complete a task
     elif ch == "5":
         not_empty, list_to_edit["tasks"] = display_tasks(list_to_edit["tasks"])
         if not_empty:
@@ -111,12 +114,13 @@ def edit_list(user, list_to_edit: dict):
     # search task
     elif ch == "6":
         search_task(list_to_edit["tasks"])
-    # add access
+    # exit the menu
     elif (ch == "7" and user["role"] == "user") or (
         ch == "9"
         and (user["role"] == "admin" or user["username"] == list_to_edit["owner"])
     ):
         clear_terminal()
+    # add access
     elif (
         user["username"] == list_to_edit["owner"] or user["role"] == "admin"
     ) and ch == "7":

@@ -29,14 +29,22 @@ def captcha_auth():
     # ask the user to enter the text that they see
     text = input("Enter the text in the image or regenerate/ exit: ").upper()
     # check if the user entered the correct text
+    # human verified
     if text == code:
         human = True
+    # regenerate captcha
     elif text == "REGENERATE":
         human = captcha_auth()
+    # exit
     elif text == "EXIT":
         exit()
+    # human not verified
     else:
         human = False
+
+    # close image
     captcha.close()
+    # remove image
     os.remove("captcha.png")
+    # return if human or not
     return human
