@@ -12,11 +12,14 @@ def login(database: dict, users: dict):
 
     # user does not exist
     if not user:
+        # ask the user if he wants to retry
         print("User does not exist")
         ch = input("do you want to retry? (y/n): ").lower()
+        # retry
         if ch == "y":
             clear_terminal()
             return login(users)
+        # exit
         else:
             clear_terminal()
             return
@@ -42,9 +45,12 @@ def login(database: dict, users: dict):
 
 def remember_me(database: dict, username: str):
     while True:
+        # ask user if he wants to be remembered
         ch = input("Do you want to remember your username? (y/n): ").lower()
+        # if not then break
         if ch == "n":
             break
+        # if yes then save to database
         elif ch == "y":
             database["user"] = username
             break
@@ -90,11 +96,16 @@ def sign_up(database: dict, users: dict):
 
 
 def add_user(database: dict):
-    user = sign_up(database["users"])
+    # create a user
+    user = sign_up(database, database["users"])
+    # if user created is valid then add to database
     if user:
         database["users"][user["username"]] = user
+        return user
+    # else print invalid input
     else:
         print("invalid input!")
+        return False
 
 
 def remove_user(database: dict):
