@@ -23,7 +23,7 @@ def main():
             # get user choice
             ch = input("Enter your choice: ")
             clear_terminal()
-            if ch == "1" or "2":
+            if ch == "1" or ch == "2":
                 if captcha_auth():
                     # login
                     if ch == "1":
