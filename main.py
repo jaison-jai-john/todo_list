@@ -15,6 +15,7 @@ def main():
     # login/signup
     # check if the user is remembered
     if not database.get("user"):
+
         while True:
             # print out options
             print("1. login \n2. signup \n3. exit")
@@ -39,6 +40,7 @@ def main():
                         # user does not exist so close program
                         if not user:
                             exit("shutting down!")
+                        break
             # exit
             elif ch == "3":
                 exit("shutting down")

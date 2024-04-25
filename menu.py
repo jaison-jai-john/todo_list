@@ -112,7 +112,7 @@ def user_menu(user, database):
     while True:
         # print options
         print(
-            "1. display lists \n2. add list \n3. select list \n4. remove list \n5. exit \n6. logout and exit"
+            "1. display lists \n2. add list \n3. select list \n4. remove list \n5. edit credentials \n6. exit \n7. logout and exit"
         )
 
         # get user choice
@@ -155,11 +155,16 @@ def user_menu(user, database):
                     ch -= 1
                     remove_list(database, lists[ch])
 
-        # exit
+        # edit credentials
         elif ch == "5":
+            user = auth.edit_user(database, user["username"])
+            if database["user"]:
+                database["user"] = user["username"]
+        # exit
+        elif ch == "6":
             break
         # logout and exit
-        elif ch == "6":
+        elif ch == "7":
             database["user"] = None
             break
         # invalid input

@@ -18,7 +18,7 @@ def login(database: dict, users: dict):
         # retry
         if ch == "y":
             clear_terminal()
-            return login(users)
+            return login(database, users)
         # exit
         else:
             clear_terminal()
@@ -128,14 +128,15 @@ def remove_user(database: dict):
     clear_terminal()
 
 
-def edit_user(database: dict):
-    print_sep("Users")
-    print_sep()
-    for i, user in enumerate(database["users"]):
-        print(f"{i+1}. {user}")
-    print_sep()
-    # take username as input
-    username = input("Enter username: ")
+def edit_user(database: dict, username=None):
+    if not username:
+        print_sep("Users")
+        print_sep()
+        for i, user in enumerate(database["users"]):
+            print(f"{i+1}. {user}")
+        print_sep()
+        # take username as input
+        username = input("Enter username: ")
     # check if user exists
     if username in database["users"]:
         # edit user
@@ -164,6 +165,7 @@ def edit_user(database: dict):
 
                 username = new_username
                 user = database["users"][username]
+                user["username"] = username
 
         change = input("Do you want to change the password? (y/n): ").lower()
         if change == "y":
@@ -191,7 +193,8 @@ def edit_user(database: dict):
             if role:
                 user["role"] = role
         clear_terminal()
+        return user
     # user does not exist
     else:
         clear_terminal()
-        print("invalid input!")
+        print("invalid input! user does not exist")
