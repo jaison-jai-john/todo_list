@@ -4,9 +4,6 @@ import menu
 from captcha import captcha_auth
 from helper import clear_terminal
 
-# notifications
-# error handling
-
 
 def main():
     # load database
