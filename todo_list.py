@@ -92,7 +92,8 @@ def edit_list(user, list_to_edit: dict):
     # edit task
     elif ch == "2":
         # display tasks
-        if display_tasks(list_to_edit["tasks"]):
+        not_empty, list_to_edit["tasks"] = display_tasks(list_to_edit["tasks"])
+        if not_empty:
             ch = int(input("Enter choice: ")) - 1
             # edit task
             edit_task(list_to_edit["tasks"][ch])
@@ -103,7 +104,8 @@ def edit_list(user, list_to_edit: dict):
     elif ch == "4":
         add_task(list_to_edit["tasks"])
     elif ch == "5":
-        if display_tasks(list_to_edit["tasks"]):
+        not_empty, list_to_edit["tasks"] = display_tasks(list_to_edit["tasks"])
+        if not_empty:
             ch = int(input("Enter choice: ")) - 1
             list_to_edit["tasks"][ch]["completed"] = True
     # search task
@@ -145,7 +147,8 @@ def list_view(list_to_view: dict, user):
         if ch == "1":
             display_tasks(list_to_view["tasks"])
         elif ch == "2":
-            if display_tasks(list_to_view["tasks"]):
+            not_empty, list_to_view["tasks"] = display_tasks(list_to_view["tasks"])
+            if not_empty:
                 ch = int(input("Enter choice: ")) - 1
                 clear_terminal()
                 list_to_view["tasks"][ch]["completed"] = True
