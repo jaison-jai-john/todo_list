@@ -1,6 +1,6 @@
 import auth
 import database as db
-from helper import clear_terminal
+from helper import assert_type, clear_terminal, print_sep
 from todo_list import add_list, display_lists, fetch_list, list_view, remove_list
 
 
@@ -32,6 +32,7 @@ def admin(user, database):
 
         # get user choice
         ch = input("Enter choice: ")
+        clear_terminal()
 
         # display lists
         if ch == "1":
@@ -45,16 +46,34 @@ def admin(user, database):
         # select list
         elif ch == "3":
             if display_lists(lists):
-                ch = int(input("Enter choice: ")) - 1
-                list_view(lists[ch], user)
+                ch = assert_type(
+                    input("Enter Choice: "),
+                    int,
+                    "Enter Choice: ",
+                    "Please enter an integer!",
+                    True,
+                    key=lambda x: True if x <= len(lists) and x > 0 else False,
+                )
+                if ch:
+                    ch -= 1
+                    list_view(lists[ch], user)
         # remove list
         elif ch == "4":
             if display_lists(lists):
-                ch = int(input("Enter choice: ")) - 1
-                remove_list(database, lists[ch])
+                ch = assert_type(
+                    input("Enter Choice: "),
+                    int,
+                    "Enter Choice: ",
+                    "Please enter an integer!",
+                    True,
+                    key=lambda x: True if x <= len(lists) and x > 0 else False,
+                )
+                if ch:
+                    ch -= 1
+                    remove_list(database, lists[ch])
         # add user
         elif ch == "5":
-            auth.add_user(database)
+            auth.add_user(database, False)
         # remove user
         elif ch == "6":
             auth.remove_user(database)
@@ -63,8 +82,11 @@ def admin(user, database):
             auth.edit_user(database)
         # view users
         elif ch == "8":
+            print_sep("Users")
+            print_sep()
             for i, user in enumerate(database["users"]):
                 print(f"{i+1}. {user}")
+            print_sep()
         # exit
         elif ch == "9":
             break
@@ -106,14 +128,32 @@ def user_menu(user, database):
         # edit list view
         elif ch == "3":
             if display_lists(lists):
-                ch = int(input("enter chocie: ")) - 1
+                ch = assert_type(
+                    input("Enter Choice: "),
+                    int,
+                    "Enter Choice: ",
+                    "Please enter an integer!",
+                    True,
+                    key=lambda x: True if x <= len(lists) and x > 0 else False,
+                )
+                if ch:
+                    ch -= 1
+                    list_view(lists[ch], user)
                 clear_terminal()
-                list_view(lists[ch], user)
         # remove list
         elif ch == "4":
             if display_lists(lists):
-                ch = int(input("enter choice: ")) - 1
-                remove_list(database, lists[ch])
+                ch = assert_type(
+                    input("Enter Choice: "),
+                    int,
+                    "Enter Choice: ",
+                    "Please enter an integer!",
+                    True,
+                    key=lambda x: True if x <= len(lists) and x > 0 else False,
+                )
+                if ch:
+                    ch -= 1
+                    remove_list(database, lists[ch])
 
         # exit
         elif ch == "5":
