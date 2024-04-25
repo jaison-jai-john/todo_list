@@ -163,9 +163,17 @@ def edit_user(database: dict, username=None):
                 database["users"][new_username] = user
                 del database["users"][username]
 
+                for task_list in database["lists"]:
+                    if task_list["owner"] == username:
+                        task_list["owner"] = new_username
+                    if username in task_list["access"]:
+                        task_list["access"].remove(username)
+                        task_list["access"].append(new_username)
+                
                 username = new_username
                 user = database["users"][username]
                 user["username"] = username
+                
 
         change = input("Do you want to change the password? (y/n): ").lower()
         if change == "y":
